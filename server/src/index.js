@@ -14,9 +14,14 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+// Dynamic CORS configuration for Render
+const allowedOrigins = process.env.CLIENT_URL 
+  ? [process.env.CLIENT_URL, 'http://localhost:3000', 'http://localhost:5173']
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -25,7 +30,7 @@ const io = new Server(server, {
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
@@ -54,7 +59,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Start server - Use dynamic port for Render (process.env.PORT)
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
@@ -62,7 +67,7 @@ const startServer = async () => {
     // Connect to database
     await connectDB();
 
-    server.listen(PORT, () => {
+    server.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 WebSocket server initialized`);
     });
