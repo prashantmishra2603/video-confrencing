@@ -64,15 +64,15 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Connect to database
+    console.log("Connecting database...");
     await connectDB();
 
     server.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📡 WebSocket server initialized`);
+      console.log(`Server running on port ${PORT}`);
     });
+
   } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
+    console.error("Startup Error:", error);
     process.exit(1);
   }
 };
